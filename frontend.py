@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from  datetime import datetime,timedelta
 import matplotlib.pyplot as plt
+import requests
 def filter_df(df,time_interval : int):
     '''
     Takes a dataframte and filters the DATE column for time_interval from starting date
@@ -29,7 +30,7 @@ def statistical_data():
     with col1:
         filtered_df_week=filter_df(data_df,7).groupby('TYPE')['VALUE'].sum().reset_index()
         weekly_expenditure=filtered_df_week['VALUE'].sum()
-        st.markdown(f'#### Total weekly expenditure is :red[{weekly_expenditure}]')
+        st.markdown(f'#### Weekly expenditure is :red[{weekly_expenditure}]')
         st.markdown('#')
         st.write('Weekly expenditure distribution')
         fig, ax = plt.subplots(figsize=(3,5))
@@ -40,7 +41,7 @@ def statistical_data():
     with col2:
         filtered_df_month=filter_df(data_df,30).groupby('TYPE')['VALUE'].sum().reset_index()
         monthly_expenditure=filtered_df_month['VALUE'].sum()
-        st.markdown(f'#### Total monthly expenditure is :red[{monthly_expenditure}]')
+        st.markdown(f'#### Monthly expenditure is :red[{monthly_expenditure}]')
         st.markdown('#')
         st.write('Monthly expenditure distribution')
         fig, ax = plt.subplots(figsize=(3,5))
@@ -50,10 +51,17 @@ def statistical_data():
         st.pyplot(fig)
     st.write('<p style="font-size: 40px; color: green; text-align:center">Gross expenditure distribution</p>',unsafe_allow_html=True)
     draw_gross_expenditure()
+def modify_data():
+    st.markdown(
+    '<h2 style="text-align: center;">Modify your data here</h2>', 
+    unsafe_allow_html=True)
+    
+    
+
 st.markdown("""
     <h1 style='text-align: center; color:aqua;'>Basic Finance app</h1>
 """, unsafe_allow_html=True)
-page_names=['View Raw data','View Statistical Data','Add Data']
+page_names=['View Raw data','View Statistical Data','Modify data']
 selected_page = st.sidebar.radio("Select Page", page_names)
 data_df = pd.read_excel('data.xlsx')
 if(selected_page == 'View Raw data'):
@@ -63,3 +71,6 @@ if(selected_page == 'View Raw data'):
     
 if(selected_page == 'View Statistical Data'):
     statistical_data()
+
+if(selected_page == 'Modify data'):
+    modify_data()
