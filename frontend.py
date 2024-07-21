@@ -3,6 +3,17 @@ import pandas as pd
 from  datetime import datetime,timedelta
 import matplotlib.pyplot as plt
 import requests
+def get_data():
+    url = "http://127.0.0.1:8000"
+    try:
+        response = requests.get(url)
+        df=pd.DataFrame(response.json())
+        df['DATE']=df['DATE'].apply(lambda x:datetime.fromtimestamp(x/1000))
+        return df
+    except Exception as e:
+        print("Failed to get response from server")
+        raise NotImplementedError('Check if server is open at the url')
+
 def filter_df(df,time_interval : int):
     '''
     Takes a dataframte and filters the DATE column for time_interval from starting date
@@ -63,7 +74,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 page_names=['View Raw data','View Statistical Data','Modify data']
 selected_page = st.sidebar.radio("Select Page", page_names)
-data_df = pd.read_excel('data.xlsx')
+data_df = get_data()
 if(selected_page == 'View Raw data'):
     st.write('Showing Raw data', unsafe_allow_html=True)
     data_df.drop('ID',axis=1,inplace=True)
