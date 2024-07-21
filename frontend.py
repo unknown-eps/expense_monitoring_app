@@ -64,7 +64,7 @@ def statistical_data():
     draw_gross_expenditure()
 def modify_data():
     st.markdown(
-    '<h2 style="text-align: center;">Add your data here</h2>', 
+    '<h2 style="text-align: center;">Add new data here</h2>', 
     unsafe_allow_html=True)
     with st.form("my_form"):
         type_options = ["transport", "food", "rent","essential","fun","education"]
