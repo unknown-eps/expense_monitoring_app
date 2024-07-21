@@ -64,9 +64,26 @@ def statistical_data():
     draw_gross_expenditure()
 def modify_data():
     st.markdown(
-    '<h2 style="text-align: center;">Modify your data here</h2>', 
+    '<h2 style="text-align: center;">Add your data here</h2>', 
     unsafe_allow_html=True)
-    
+    with st.form("my_form"):
+        type_options = ["transport", "food", "rent","essential","fun","education"]
+        type_input = st.selectbox("Type", type_options)
+        value_input = st.text_input("VALUE")
+        submitted = st.form_submit_button("Submit")
+        if(submitted):
+            url = "http://127.0.0.1:8000"
+            try:
+                data = {"type": type_input, "value": int(value_input)}
+                response = requests.post(url, json=data)
+                if response.status_code == 200:
+                    st.success("Data successfully made!")
+                else:
+                    st.error(f"Request failed with status code {response.status_code}")
+            except requests.exceptions.RequestException as e:
+                st.error(f"An error occurred: {e}")
+
+
     
 
 st.markdown("""
