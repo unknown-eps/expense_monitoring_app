@@ -11,7 +11,7 @@ def get_data():
         df['DATE']=df['DATE'].apply(lambda x:datetime.fromtimestamp(x/1000))
         return df
     except Exception as e:
-        print("Failed to get response from server")
+        print(f"Failed to get response from server {e}")
         raise NotImplementedError('Check if server is open at the url')
 
 def filter_df(df,time_interval : int):
