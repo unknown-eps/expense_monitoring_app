@@ -12,8 +12,7 @@ def get_data():
         return df
     except Exception as e:
         print(f"Failed to get response from server {e}")
-        raise NotImplementedError('Check if server is open at the url')
-
+        st.error("Error : No fastapi server found")
 def filter_df(df,time_interval : int):
     '''
     Takes a dataframte and filters the DATE column for time_interval from starting date
@@ -94,9 +93,9 @@ selected_page = st.sidebar.radio("Select Page", page_names)
 data_df = get_data()
 if(selected_page == 'View Raw data'):
     st.write('Showing Raw data', unsafe_allow_html=True)
-    data_df.drop('ID',axis=1,inplace=True)
-    st.dataframe((data_df.sort_values(by='DATE',ascending=False)).set_index('DATE'),width=800,height=400)
-    
+    if(data_df is not None):
+        data_df.drop('ID',axis=1,inplace=True)
+        st.dataframe((data_df.sort_values(by='DATE',ascending=False)).set_index('DATE'),width=800,height=400)
 if(selected_page == 'View Statistical Data'):
     statistical_data()
 
