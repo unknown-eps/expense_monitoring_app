@@ -80,7 +80,7 @@ def modify_data():
                     st.success("Data successfully made!")
                 else:
                     st.error(f"Request failed with status code {response.status_code}")
-            except requests.exceptions.RequestException as e:
+            except Exception as e:
                 st.error(f"An error occurred: {e}")
 
 
