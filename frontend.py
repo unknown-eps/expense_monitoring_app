@@ -81,23 +81,36 @@ def modify_data():
                     st.error(f"Request failed with status code {response.status_code}")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
-
-
-    
+def check_credentials(username,password):
+    st.session_state.login_attempted=True
+    if(username=="admin" and password == "1234"):
+        st.session_state.authenticated=True
+def authenticate():
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated=False
+        st.session_state.login_attempted=False
+    if not st.session_state.authenticated:
+        username=st.text_input("username")
+        password=st.text_input("password")
+        st.button(label="login",on_click=lambda :check_credentials(username,password))
+    if st.session_state.login_attempted and not st.session_state.authenticated:
+        st.error("Invalid Credentials")
 
 st.markdown("""
     <h1 style='text-align: center; color:aqua;'>Basic Finance app</h1>
 """, unsafe_allow_html=True)
-page_names=['View Raw data','View Statistical Data','Modify data']
-selected_page = st.sidebar.radio("Select Page", page_names)
-data_df = get_data()
-if(selected_page == 'View Raw data'):
-    st.write('Showing Raw data', unsafe_allow_html=True)
-    if(data_df is not None):
-        data_df.drop('ID',axis=1,inplace=True)
-        st.dataframe((data_df.sort_values(by='DATE',ascending=False)).set_index('DATE'),width=800,height=400)
-if(selected_page == 'View Statistical Data'):
-    statistical_data()
+authenticate()
+if st.session_state.authenticated:
+    page_names=['View Raw data','View Statistical Data','Modify data']
+    selected_page = st.sidebar.radio("Select Page", page_names)
+    data_df = get_data()
+    if(selected_page == 'View Raw data'):
+        st.write('Showing Raw data', unsafe_allow_html=True)
+        if(data_df is not None):
+            data_df.drop('ID',axis=1,inplace=True)
+            st.dataframe((data_df.sort_values(by='DATE',ascending=False)).set_index('DATE'),width=800,height=400)
+    if(selected_page == 'View Statistical Data'):
+        statistical_data()
 
-if(selected_page == 'Modify data'):
-    modify_data()
+    if(selected_page == 'Modify data'):
+        modify_data()
