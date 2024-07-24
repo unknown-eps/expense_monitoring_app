@@ -17,3 +17,12 @@ async def post_data(request : Request):
     data_df.loc[len(data_df)]={'ID':len(data_df),'TYPE':data['type'],'VALUE':data['value'],'DATE': datetime.now()}
     data_df.to_excel('data.xlsx',index=False)
     return {"message": "Data received successfully!"}
+
+@app.post("/validate")
+async def validate_user(request: Request):
+    data = await request.json()
+    print(data)
+    if(data['username']=='admin' and data['password'] == '1234'):
+        return 1
+    else:
+        return 0

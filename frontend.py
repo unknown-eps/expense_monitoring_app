@@ -8,7 +8,7 @@ def get_data():
     try:
         response = requests.get(url)
         df=pd.DataFrame(response.json())
-        df['DATE']=df['DATE'].apply(lambda x:datetime.fromtimestamp(x/1000))
+        df['DATE']=df['DATE'].apply(lambda x:datetime.fromtimestamp(x/1000)-timedelta(hours=5, minutes=30))
         return df
     except Exception as e:
         print(f"Failed to get response from server {e}")
@@ -83,17 +83,25 @@ def modify_data():
                 st.error(f"An error occurred: {e}")
 def check_credentials(username,password):
     st.session_state.login_attempted=True
-    if(username=="admin" and password == "1234"):
-        st.session_state.authenticated=True
+    url='http://127.0.0.1:8000/validate'
+    data={"username":username,"password":password}
+    try:
+        response = requests.post(url,json=data)
+        if response.json():
+            st.session_state.authenticated=True
+    except Exception:
+        st.error("Check if the backend server is up")
+        st.session_state.backend = False
 def authenticate():
     if "authenticated" not in st.session_state:
         st.session_state.authenticated=False
         st.session_state.login_attempted=False
+        st.session_state.backend=True
     if not st.session_state.authenticated:
         username=st.text_input("username")
         password=st.text_input("password")
         st.button(label="login",on_click=lambda :check_credentials(username,password))
-    if st.session_state.login_attempted and not st.session_state.authenticated:
+    if st.session_state.login_attempted and not st.session_state.authenticated and st.session_state.backend:
         st.error("Invalid Credentials")
 
 st.markdown("""
